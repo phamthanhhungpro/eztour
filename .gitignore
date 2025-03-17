@@ -42,3 +42,5 @@ Thumbs.db
 # Debug files
 debug/
 *.debug
+/eztourapi/.vs/eztourapi
+/eztourapi/obj
