@@ -1,17 +1,21 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { CheckboxModule } from 'primeng/checkbox';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { RippleModule } from 'primeng/ripple';
 import { AppFloatingConfigurator } from '../../layout/component/app.floatingconfigurator';
+import { UserApi } from '../../restapi/userapi';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule, FormsModule, RouterModule, RippleModule, AppFloatingConfigurator],
+    imports: [ButtonModule, CheckboxModule, InputTextModule, PasswordModule,
+         FormsModule, RouterModule, RippleModule, AppFloatingConfigurator, ToastModule],
     template: `
         <app-floating-configurator />
         <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
@@ -36,7 +40,7 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                     />
                                 </g>
                             </svg>
-                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to PrimeLand!</div>
+                            <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome to Tour Admin!</div>
                             <span class="text-muted-color font-medium">Sign in to continue</span>
                         </div>
 
@@ -54,13 +58,15 @@ import { AppFloatingConfigurator } from '../../layout/component/app.floatingconf
                                 </div>
                                 <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                             </div>
-                            <p-button label="Sign In" styleClass="w-full" routerLink="/"></p-button>
+                            <p-button (click)=login() label="Sign In" styleClass="w-full"></p-button>
                         </div>
+                        <p-toast />
                     </div>
                 </div>
             </div>
         </div>
-    `
+    `,
+    providers: [MessageService]
 })
 export class Login {
     email: string = '';
@@ -68,4 +74,33 @@ export class Login {
     password: string = '';
 
     checked: boolean = false;
+
+    constructor(
+        private router: Router,
+        private userApi: UserApi,
+        private messageService: MessageService
+    ) {}
+
+    login() {
+        console.log('Email: ', this.email);
+        console.log('Password ', this.password);
+
+        this.userApi.login({
+            userName: this.email,
+            password: this.password
+        }).subscribe((res) => {
+            if (res.token) {
+                this.messageService.add({ severity: 'success', summary: 'Success Message', detail: res.message });
+                // save token to local storage
+                localStorage.setItem('token', res.token);
+                // save user to local storage
+                localStorage.setItem('user', JSON.stringify(res.user));
+                // navigate to admin page
+                this.router.navigate(['/admin']);
+            } else {
+                this.messageService.add({ severity: 'error', summary: 'Error Message', detail: res.message, life: 3000 });
+            }
+
+        });
+    }
 }

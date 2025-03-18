@@ -1,0 +1,6 @@
+@eztourapi_HostAddress = http://localhost:5078
+
+GET {{eztourapi_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

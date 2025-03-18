@@ -44,3 +44,4 @@ debug/
 *.debug
 /eztourapi/.vs/eztourapi
 /eztourapi/obj
+/eztourapi/.vs/ProjectEvaluation
