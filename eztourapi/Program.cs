@@ -18,6 +18,8 @@ namespace eztourapi
                 options.UseSqlServer(connectionString));
 
             builder.Services.AddScoped<IUserServices, UserService>();
+            builder.Services.AddScoped<ITourGuideService, TourGuideService>();
+            builder.Services.AddScoped<IClientService, ClientService>();
 
             builder.Services.AddCors(options =>
             {
@@ -46,7 +48,7 @@ namespace eztourapi
             }
 
             app.UseCors();
-
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
 
             app.UseAuthentication();

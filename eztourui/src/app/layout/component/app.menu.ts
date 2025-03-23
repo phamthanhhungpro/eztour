@@ -68,9 +68,9 @@ export class AppMenu {
                         routerLink: ['/admin/user']
                     },
                     {
-                        label: 'Roles',
-                        icon: 'pi pi-fw pi-key',
-                        routerLink: ['/admin/role']
+                        label: 'Files',
+                        icon: 'pi pi-fw pi-file',
+                        routerLink: ['/admin/file']
                     }
                 ]
             },

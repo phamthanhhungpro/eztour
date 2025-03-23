@@ -62,7 +62,7 @@ import { LayoutService } from '../service/layout.service';
                         <span>Profile</span>
                     </button>
                     <ul class="hidden border-round shadow-2 absolute right-0 mt-10 w-15rem bg-white dark:bg-gray-900 list-none p-3 m-0">
-                        <li>
+                        <li *ngIf="!checkUserLoggedIn()">
                             <a 
                                 routerLink="/auth/login" 
                                 class="flex align-items-center cursor-pointer p-3 hover:surface-100 dark:hover:surface-700 border-round text-700 dark:text-white/80"
@@ -71,7 +71,7 @@ import { LayoutService } from '../service/layout.service';
                                 <span>Login</span>
                             </a>
                         </li>
-                        <li>
+                        <li *ngIf="checkUserLoggedIn()">
                             <a 
                                 (click)="onLogout()"
                                 class="flex align-items-center cursor-pointer p-3 hover:surface-100 dark:hover:surface-700 border-round text-700 dark:text-white/80"
@@ -98,10 +98,15 @@ export class AppTopbar {
     }
 
     onLogout() {
-        // Implement logout logic here
-        console.log('Logout clicked');
+        // Clear token and user info from local storage
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
 
         // navigate to login page
         this.router.navigate(['/auth/login']);
+    }
+
+    checkUserLoggedIn() {
+        return localStorage.getItem('token') !== null;
     }
 }

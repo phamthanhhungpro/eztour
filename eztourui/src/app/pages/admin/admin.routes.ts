@@ -8,6 +8,8 @@ import { ClientComponent } from './client/client.component';
 import { TourguideComponent } from './tourguide/tourguide.component';
 import { UserComponent } from './user/user.component';
 import { RoleComponent } from './role/role.component';
+import { FileManagerComponent } from '../shared/file-manager/file-manager.component';
+import { FileComponent } from './file/file.component';
 
 export default [
     {
@@ -43,7 +45,7 @@ export default [
         component: UserComponent
     },
     {
-        path: 'role',
-        component: RoleComponent
+        path: 'file',
+        component: FileComponent
     },
 ] as Routes;

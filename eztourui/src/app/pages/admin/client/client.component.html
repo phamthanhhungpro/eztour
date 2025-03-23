@@ -1,1 +1,114 @@
-<p>client works!</p>
+<p-toolbar styleClass="mb-6">
+    <ng-template #start>
+        <p-button label="New Client" icon="pi pi-plus" severity="secondary" class="mr-2" (onClick)="openNew()" />
+    </ng-template>
+</p-toolbar>
+
+<p-table #dt [value]="clients()" [rows]="10" [paginator]="true" [globalFilterFields]="['name']"
+    [tableStyle]="{ 'min-width': '75rem' }" [(selection)]="selectedClient" [rowHover]="true" dataKey="id"
+    [showCurrentPageReport]="true" [rowsPerPageOptions]="[10, 20, 30]">
+    <ng-template #caption>
+        <div class="flex items-center justify-between">
+            <h5 class="m-0">Manage Clients</h5>
+            <p-iconfield>
+                <p-inputicon styleClass="pi pi-search" />
+                <input pInputText type="text" (input)="onGlobalFilter(dt, $event)" placeholder="Search..." />
+            </p-iconfield>
+
+        </div>
+    </ng-template>
+    <ng-template #header>
+        <tr>
+            <th style="width: 3rem">
+                <p-tableHeaderCheckbox />
+            </th>
+            <th style="min-width: 16rem">Name</th>
+            <th style="min-width:16rem">
+                Banner
+            </th>
+            <th style="min-width: 8rem">
+                UserName
+            </th>
+            <th style="min-width: 8rem">
+                Password
+            </th>
+            <th style="min-width: 12rem"> Actions</th>
+        </tr>
+    </ng-template>
+    <ng-template #body let-client>
+        <tr>
+            <td style="width: 3rem">
+                <p-tableCheckbox [value]="client" />
+            </td>
+            <td style="min-width: 12rem">{{ client.name }}</td>
+            <td>
+                <img [src]="baseUrl + client.banner"  style="width: 64px" class="rounded" />
+            </td>
+            <td>{{ client.viewUserName }}</td>
+            <td>{{ client.viewPassword }}</td>
+            <td>
+                <p-button icon="pi pi-pencil" class="mr-2" [rounded]="true" [outlined]="true" (click)="edit(client)" />
+                <p-button icon="pi pi-trash" severity="danger" [rounded]="true" [outlined]="true"
+                    (click)="delete(client)" />
+            </td>
+        </tr>
+    </ng-template>
+</p-table>
+
+<!-- Insert or Update form -->
+<p-dialog [(visible)]="dialog" [style]="{ width: '650px' }" header="Client" [modal]="true">
+    <ng-template #content>
+        <div class="flex flex-col gap-6">
+            <div>
+                <label for="name" class="block font-bold mb-3">Name</label>
+                <input type="text" pInputText id="name" [(ngModel)]="client.name" required autofocus fluid />
+                <small class="text-red-500" *ngIf="submitted && !client.name">Name is required.</small>
+            </div>
+            <div>
+                <label for="phone" class="block font-bold mb-3">Phone</label>
+                <input type="text" pInputText id="phone" [(ngModel)]="client.phone" fluid />
+            </div>
+
+            <div>
+                <label for="email" class="block font-bold mb-3">Email</label>
+                <input type="text" pInputText id="email" [(ngModel)]="client.email" fluid />
+            </div>
+            <div>
+                <label for="userName" class="block font-bold mb-3">User Name</label>
+                <input type="text" pInputText id="userName" [(ngModel)]="client.viewUserName" fluid />
+            </div>
+            <!-- password -->
+            <div>
+                <label for="inventoryStatus" class="block font-bold mb-3">Password</label>
+                <p-password id="password" [(ngModel)]="client.viewPassword" [toggleMask]="true" styleClass="mb-4"
+                    required fluid></p-password>
+            </div>
+            <div class="flex flex-col gap-2">
+                <label class="block font-bold mb-2">Banner</label>
+                <div class="flex items center gap-4">
+                    <button (click)="openFileManager()" class="p-button p-button-secondary flex items-center gap-2">
+                        <i class="pi pi-upload"></i>
+                        <span>Upload Image</span>
+                    </button>
+                    <div *ngIf="client.banner" class="flex items-center gap-2">
+                        <img [src]="baseUrl + client.banner" alt="Preview"
+                            class="h-12 w-12 object-cover rounded-full border">
+                        <span class="text-sm text-gray-600">{{ client.banner }}</span>
+                        <button (click)="removeImage()" class="p-button p-button-text p-button-danger p-button-sm">
+                            <i class="pi pi-times"></i>
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-template>
+
+    <ng-template #footer>
+        <p-button label="Cancel" icon="pi pi-times" text (click)="hideDialog()" />
+        <p-button label="Save" icon="pi pi-check" (click)="save()" />
+    </ng-template>
+</p-dialog>
+
+<p-confirmdialog [style]="{ width: '450px' }" />
+<p-toast />

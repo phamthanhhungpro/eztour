@@ -4,14 +4,13 @@ import { FileManagerComponent } from '../../shared/file-manager/file-manager.com
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-role',
+  selector: 'app-file',
   imports: [CommonModule],
   standalone: true,
-  templateUrl: './role.component.html',
-  styleUrl: './role.component.scss',
+  templateUrl: './file.component.html',
   providers: [DialogService],
 })
-export class RoleComponent {
+export class FileComponent {
   selectedFile: string | null = null;
 
   constructor(private dialogService: DialogService) {}
