@@ -106,73 +106,73 @@ export class TourguideComponent {
   }
 
   hideDialog() {
-        this.dialog = false;
-        this.submitted = false;
-      }
+    this.dialog = false;
+    this.submitted = false;
+  }
 
   loadData() {
-        this.tourGuideApi.getGuides().subscribe((data: TourGuide[]) => {
-          this.tourGuides = data;
-        });
-      }
+    this.tourGuideApi.getGuides().subscribe((data: TourGuide[]) => {
+      this.tourGuides = data;
+    });
+  }
 
   save() {
-        this.submitted = true;
-        if (this.tourGuide.id) {
-          this.tourGuideApi.updateGuide(this.tourGuide).subscribe((data: any) => {
-            if (data.isSucceeded) {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Successful',
-                detail: data.message,
-                life: 3000
-              });
-              this.loadData();
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: data.message,
-                life: 3000
-              });
-            }
+    this.submitted = true;
+    if (this.tourGuide.id) {
+      this.tourGuideApi.updateGuide(this.tourGuide).subscribe((data: any) => {
+        if (data.isSucceeded) {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Successful',
+            detail: data.message,
+            life: 3000
+          });
+          this.loadData();
+        } else {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: data.message,
+            life: 3000
           });
         }
-        else {
-          const createRequest: any = {
-            name: this.tourGuide.name,
-            phone: this.tourGuide.phone,
-            address: this.tourGuide.address,
-            image: this.tourGuide.image
-          };
+      });
+    }
+    else {
+      const createRequest: any = {
+        name: this.tourGuide.name,
+        phone: this.tourGuide.phone,
+        address: this.tourGuide.address,
+        image: this.tourGuide.image
+      };
 
-          this.tourGuideApi.createGuide(createRequest).subscribe((data: any) => {
-            if (data.isSucceeded) {
-              this.messageService.add({ severity: 'success', summary: 'Successful', detail: data.message, life: 3000 });
-              this.loadData();
-            } else {
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
-            }
-          });
+      this.tourGuideApi.createGuide(createRequest).subscribe((data: any) => {
+        if (data.isSucceeded) {
+          this.messageService.add({ severity: 'success', summary: 'Successful', detail: data.message, life: 3000 });
+          this.loadData();
+        } else {
+          this.messageService.add({ severity: 'error', summary: 'Error', detail: data.message, life: 3000 });
         }
+      });
+    }
 
-        this.dialog = false;
-      }
+    this.dialog = false;
+  }
   openFileManager() {
-        const ref = this.dialogService.open(FileManagerComponent, {
-          header: 'Select a File',
-          modal: true, // Enables backdrop mode
-          dismissableMask: true, // Click outside to close
-        });
+    const ref = this.dialogService.open(FileManagerComponent, {
+      header: 'Select a File',
+      modal: true, // Enables backdrop mode
+      dismissableMask: true, // Click outside to close
+    });
 
-        ref.onClose.subscribe((file) => {
-          if (file) {
-            this.tourGuide.image = file.url;
-          }
-        });
+    ref.onClose.subscribe((file) => {
+      if (file) {
+        this.tourGuide.image = file[0].url;
       }
+    });
+  }
 
   removeImage() {
-        this.tourGuide.image = '';
-      }
-    }
+    this.tourGuide.image = '';
+  }
+}

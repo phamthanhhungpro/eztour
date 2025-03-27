@@ -25,7 +25,7 @@ export class FileComponent {
 
     ref.onClose.subscribe((file) => {
       if (file) {
-        this.selectedFile = file.name;
+        this.selectedFile = file[0].name;
       }
     });
   }

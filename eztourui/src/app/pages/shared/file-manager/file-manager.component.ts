@@ -10,6 +10,7 @@ import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-file-manager',
+  standalone: true,
   imports: [
     CommonModule,
     FileUploadModule,
@@ -31,9 +32,12 @@ export class FileManagerComponent {
   searchTerm: string = ''; // Search input model
   selectedFolderPath: string | null = null; // Track selected folder path
   selectedFile: File | null = null; // Store the selected file
+  selectedFiles: FileItem[] = []; // For multiple file selection
+  previewTop: number = 0;
+  previewLeft: number = 0;
 
   baseUrl = `${environment.serverUrl}`;
-  
+
   constructor(public ref: DynamicDialogRef, public fileApi: FileApi,
     private messageService: MessageService
   ) {
@@ -71,6 +75,36 @@ export class FileManagerComponent {
     return this.selectedFolderPath?.startsWith(folderPath) || false;
   }
 
+  // Check if a file is in the selectedFiles array
+  isFileSelected(file: FileItem): boolean {
+    return this.selectedFiles.some(f => f.url === file.url);
+  }
+
+  // Toggle file selection
+  toggleFileSelection(file: FileItem) {
+    if (file.type !== 'file') return;
+
+    const index = this.selectedFiles.findIndex(f => f.url === file.url);
+    if (index > -1) {
+      // Remove from selection
+      this.selectedFiles.splice(index, 1);
+    } else {
+      // Add to selection
+      this.selectedFiles.push(file);
+    }
+  }
+
+  // Confirm and close with selected files
+  confirmSelection() {
+    if (this.selectedFiles.length === 0) {
+      this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'No files selected' });
+      return;
+    }
+
+    // Close the dialog and return selected files
+    this.ref.close(this.selectedFiles);
+  }
+
   selectFile(file: FileItem) {
     this.ref.close(file);
   }
@@ -94,11 +128,18 @@ export class FileManagerComponent {
     }
   }
 
-  // Show image preview on hover
-  showPreview(file: FileItem, event: any) {
-    console.log(file.url);
+  // Show image preview on hover with position
+  showPreview(file: FileItem, event: MouseEvent) {
     if (file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|gif)$/i)) {
-      this.previewImage = file.url as string; // Assuming images are stored in assets
+      this.previewImage = file.url as string;
+  
+      // Position the preview at the fixed left bottom of the screen
+      const viewportHeight = window.innerHeight;
+      const viewportWidth = window.innerWidth;
+  
+      // Set to bottom left with some padding
+      this.previewTop = viewportHeight - 420; // 20px padding from bottom
+      this.previewLeft = 2; // 20px padding from left
     }
   }
 
@@ -126,7 +167,7 @@ export class FileManagerComponent {
         this.fileUpload.clear();
         this.selectedFile = null;
         uploadedFile.url = response.url;
-        
+
         this.messageService.add({ severity: 'success', summary: 'Successful', detail: response.message });
         this.fileApi.getFiles().subscribe(files => {
           this.rootFiles = files;

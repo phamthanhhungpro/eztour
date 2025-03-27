@@ -203,7 +203,7 @@ export class ClientComponent {
 
     ref.onClose.subscribe((file) => {
       if (file) {
-        this.client.banner = file.url;
+        this.client.banner = file[0].url;
       }
     });
   }

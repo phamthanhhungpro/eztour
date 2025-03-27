@@ -143,7 +143,7 @@ export class UserComponent {
     }
 
 
-    saveProduct() {
+    save() {
         this.submitted = true;
         if (this.user.id) {
             this.userApi.updateUser(this.user).subscribe((data: any) => {
